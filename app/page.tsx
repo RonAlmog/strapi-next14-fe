@@ -1,9 +1,27 @@
-async function getStrapiData(url: string) {
-  const baseUrl = "http://localhost:1337";
-  try {
-    // const response = await fetch(baseUrl + url);
-    const response = await fetch("http://localhost:1337/api/home-page");
+import qs from "qs";
 
+const homePageQuery = qs.stringify({
+  populate: {
+    blocks: {
+      populate: {
+        image: {
+          fields: ["url", "text"],
+        },
+        link: {
+          populate: true,
+        },
+      },
+    },
+  },
+});
+
+async function getStrapiData(path: string) {
+  const baseUrl = "http://localhost:1337";
+  const url = new URL(path, baseUrl);
+  url.search = homePageQuery;
+
+  try {
+    const response = await fetch(url.href);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -13,7 +31,7 @@ async function getStrapiData(url: string) {
 
 export default async function Home() {
   const strapiData = await getStrapiData("/api/home-page");
-  console.log("data:", strapiData.data);
+  console.dir(strapiData, { depth: null });
 
   const { Title, Description } = strapiData.data.attributes;
 
