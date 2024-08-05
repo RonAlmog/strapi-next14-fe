@@ -1,3 +1,4 @@
+import HeroSection from "@/components/custom/HeroSection";
 import qs from "qs";
 
 const homePageQuery = qs.stringify({
@@ -33,12 +34,11 @@ export default async function Home() {
   const strapiData = await getStrapiData("/api/home-page");
   console.dir(strapiData, { depth: null });
 
-  const { Title, Description } = strapiData.data.attributes;
+  const { Title, Description, blocks } = strapiData.data.attributes;
 
   return (
-    <main className="container mx-auto py-6">
-      <h1 className="text-5xl font-bold">{Title}</h1>
-      <p className="text-xl mt-4">{Description}</p>
+    <main>
+      <HeroSection data={blocks[0]} />
     </main>
   );
 }
